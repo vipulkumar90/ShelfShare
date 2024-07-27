@@ -1,4 +1,8 @@
 
+using BookCatalog.API.DataContext;
+using BookCatalog.API.Repositories;
+using Microsoft.EntityFrameworkCore;
+
 namespace BookCatalog.API
 {
 	public class Program
@@ -8,9 +12,17 @@ namespace BookCatalog.API
 			var builder = WebApplication.CreateBuilder(args);
 
 			// Add services to the container.
-
+			builder.Services.AddScoped<IBookRepository, BookRepository>();
 			builder.Services.AddControllers();
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+			builder.Services.AddDbContext<BookCatalogContext>(options =>
+				options.UseInMemoryDatabase("BookCatalogDb"));
+			var options = new DbContextOptionsBuilder<BookCatalogContext>()
+			.UseInMemoryDatabase("BookCatalogDb").Options;
+			using (var context = new BookCatalogContext(options))
+			{
+				context.Database.EnsureCreated();
+			}
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
 
