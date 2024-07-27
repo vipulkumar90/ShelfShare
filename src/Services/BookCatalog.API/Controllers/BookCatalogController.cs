@@ -1,8 +1,6 @@
-﻿using BookCatalog.API.DataContext;
-using BookCatalog.API.Models;
-using Microsoft.AspNetCore.Http;
+﻿using BookCatalog.API.Models;
+using BookCatalog.API.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BookCatalog.API.Controllers
 {
@@ -10,69 +8,88 @@ namespace BookCatalog.API.Controllers
 	[ApiController]
 	public class BookCatalogController : ControllerBase
 	{
-		private readonly BookCatalogContext _bookCatalogContext;
-		public BookCatalogController(BookCatalogContext bookCatalogContext)
+		private readonly IBookRepository _bookRepository;
+		public BookCatalogController(IBookRepository bookRepository)
 		{
-			_bookCatalogContext = bookCatalogContext;
+			_bookRepository = bookRepository;
 		}
 		[HttpGet]
-		public ActionResult<IEnumerable<Book>> Get()
+		public async Task<ActionResult<IEnumerable<Book>>> GetAsync()
 		{
-			return Ok(_bookCatalogContext.Books.ToList());
+			try
+			{
+				return Ok(await _bookRepository.ReadAsync());
+			}
+			catch (Exception ex)
+			{
+
+				return StatusCode(StatusCodes.Status500InternalServerError, ex);
+			}
 		}
 		[HttpGet("{id}")]
-		public ActionResult<Book> Get([FromRoute] Guid id)
+		public async Task<ActionResult<Book>> GetAsync([FromRoute] Guid id)
 		{
-			var book = _bookCatalogContext.Books.FirstOrDefault(book => book.Id == id);
-			if (book == null)
+			try
 			{
-				return NotFound();
+				Book? book = await _bookRepository.ReadAsync(id);
+				if (book == null)
+				{
+					return NotFound();
+				}
+				return Ok(book);
 			}
-			return Ok(book);
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, ex);
+			}
 		}
 		[HttpPost]
-		public ActionResult Post([FromBody] BookDto bookDto)
+		public async Task<ActionResult> PostAsync([FromBody] BookDto bookDto)
 		{
-			var book = new Book
+
+			try
 			{
-				Title = bookDto.Title,
-				Author = bookDto.Author,
-				Genre = bookDto.Genre,
-				Year = bookDto.Year,
-				IsAvailable = bookDto.IsAvailable,
-			};
-			_bookCatalogContext.Books.Add(book);
-			_bookCatalogContext.SaveChanges();
-			return Created();
+				await _bookRepository.CreateAsync(bookDto);
+				return Created();
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, ex);
+			}
 		}
 		[HttpPut("{id}")]
-		public ActionResult Put([FromRoute] Guid id, [FromBody] BookDto bookDto)
+		public async Task<ActionResult> PutAsync([FromRoute] Guid id, [FromBody] BookDto bookDto)
 		{
-			var bookToBeUpdated = _bookCatalogContext.Books.FirstOrDefault(book => book.Id == id);
-			if (bookToBeUpdated == null)
+			try
 			{
-				return BadRequest();
+				var updatedBook = await _bookRepository.UpdateAsync(id, bookDto);
+				if (updatedBook == null)
+				{
+					return BadRequest();
+				}
+				return Ok(updatedBook);
 			}
-			bookToBeUpdated.Title = bookDto.Title;
-			bookToBeUpdated.Author = bookDto.Author;
-			bookToBeUpdated.Genre = bookDto.Genre;
-			bookToBeUpdated.Year = bookDto.Year;
-			bookToBeUpdated.IsAvailable = bookDto.IsAvailable;
-			_bookCatalogContext.Update(bookToBeUpdated);
-			_bookCatalogContext.SaveChanges();
-			return Ok(bookToBeUpdated);
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, ex);
+			}
 		}
 		[HttpDelete("{id}")]
-		public ActionResult Delete([FromRoute] Guid id)
+		public async Task<ActionResult> DeleteAsync([FromRoute] Guid id)
 		{
-			var bookToBeDeleted = _bookCatalogContext.Books.FirstOrDefault(book => book.Id == id);
-			if (bookToBeDeleted == null)
+			try
 			{
-				return BadRequest();
+				var isDeleted = await _bookRepository.DeleteAsync(id);
+				if (isDeleted == false)
+				{
+					return BadRequest();
+				}
+				return NoContent();
 			}
-			_bookCatalogContext.Remove(bookToBeDeleted); 
-			_bookCatalogContext.SaveChanges();
-			return NoContent();
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, ex);
+			}
 		}
 	}
 }
