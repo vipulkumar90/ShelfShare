@@ -2,6 +2,8 @@
 using BookCatalog.API.DataContext;
 using BookCatalog.API.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Logging;
 
 namespace BookCatalog.API
 {
@@ -10,7 +12,8 @@ namespace BookCatalog.API
 		public static void Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
-
+			// Add Serilog
+			builder.Host.UseSerilog(SerilogConfiguration.Configure);
 			// Add services to the container.
 			builder.Services.AddScoped<IBookRepository, BookRepository>();
 			builder.Services.AddControllers();

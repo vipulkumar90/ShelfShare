@@ -2,6 +2,8 @@
 using BookLoanManagement.API.DataContext;
 using BookLoanManagement.API.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Logging;
+using Serilog;
 
 namespace BookLoanManagement.API
 {
@@ -11,6 +13,8 @@ namespace BookLoanManagement.API
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
+			// Add Serilog
+			builder.Host.UseSerilog(SerilogConfiguration.Configure);
 			// Add services to the container.
 			builder.Services.AddScoped<ILoanRepository, LoanRepository>();
 			builder.Services.AddControllers();

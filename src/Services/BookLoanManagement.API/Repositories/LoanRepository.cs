@@ -7,14 +7,18 @@ namespace BookLoanManagement.API.Repositories
 	public class LoanRepository : ILoanRepository
 	{
 		private readonly BookLoanManagementContext _context;
-        public LoanRepository(BookLoanManagementContext context)
+		private readonly string _logContext = $"[{typeof(LoanRepository).Name}]";
+		private readonly ILogger<LoanRepository> _logger;
+		public LoanRepository(BookLoanManagementContext context, ILogger<LoanRepository> logger)
         {
             _context = context;
+			_logger = logger;
         }
-        public async Task CreateAsync(LoanDto loanDto)
+        public async Task<Guid> CreateAsync(LoanDto loanDto)
 		{
 			try
 			{
+				_logger.LogInformation($"{_logContext} Inserting a book loan into db");
 				var loan = new Loan
 				{
 					BookId = loanDto.BookId,
@@ -25,10 +29,12 @@ namespace BookLoanManagement.API.Repositories
 				};
 				await _context.AddAsync(loan);
 				await _context.SaveChangesAsync();
+				_logger.LogInformation($"{_logContext} Inserted a book loan with id:{loan.Id} successfully");
+				return loan.Id;
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-
+				_logger.LogError($"{_logContext} Internal error: {ex}");
 				throw;
 			}
 		}
@@ -37,18 +43,21 @@ namespace BookLoanManagement.API.Repositories
 		{
 			try
 			{
+				_logger.LogInformation($"{_logContext} Removing a book loan with id:{id}");
 				var loanToBeDeleted = await _context.Loans.FindAsync(id);
 				if (loanToBeDeleted == null)
 				{
+					_logger.LogInformation($"{_logContext} Book loan with id:{id} doesn't exist");
 					return false;
 				}
 				_context.Remove(loanToBeDeleted);
 				await _context.SaveChangesAsync();
+				_logger.LogInformation($"{_logContext} Removed the book loan with id:{id}");
 				return true;
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-
+				_logger.LogError($"{_logContext} Internal error: {ex}");
 				throw;
 			}
 		}
@@ -57,11 +66,14 @@ namespace BookLoanManagement.API.Repositories
 		{
 			try
 			{
-				return await _context.Loans.ToListAsync();
+				_logger.LogInformation($"{_logContext} Fetching all the book loans");
+				var loans = await _context.Loans.ToListAsync();
+				_logger.LogInformation($"{_logContext} Feteched all book loans");
+				return loans;
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-
+				_logger.LogError($"{_logContext} Internal error: {ex}");
 				throw;
 			}
 		}
@@ -70,11 +82,14 @@ namespace BookLoanManagement.API.Repositories
 		{
 			try
 			{
-				return await _context.Loans.FindAsync(id);
+				_logger.LogInformation($"{_logContext} Fetching details of a book loan with id:{id}");
+				var loan = await _context.Loans.FindAsync(id);
+				_logger.LogInformation($"{_logContext} Fetched details of a book loan with id:{id}");
+				return loan;
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-
+				_logger.LogError($"{_logContext} Internal error: {ex}");
 				throw;
 			}
 		}
@@ -83,9 +98,11 @@ namespace BookLoanManagement.API.Repositories
 		{
 			try
 			{
+				_logger.LogInformation($"{_logContext} Modifying details of a book loan with id:{id}");
 				var loanToBeUpdated = await _context.Loans.FindAsync(id);
 				if (loanToBeUpdated == null)
 				{
+					_logger.LogInformation($"{_logContext} Book loan with id:{id} doesn't exist");
 					return null;
 				}
 				loanToBeUpdated.BookId = loanDto.BookId;
@@ -95,11 +112,12 @@ namespace BookLoanManagement.API.Repositories
 				loanToBeUpdated.ReturnedAt = loanDto.ReturnedAt;
 				_context.Update(loanToBeUpdated);
 				await _context.SaveChangesAsync();
+				_logger.LogInformation($"{_logContext} Modified details of the book loan with id:{id}");
 				return loanToBeUpdated;
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-
+				_logger.LogError($"{_logContext} Internal error: {ex}");
 				throw;
 			}
 		}

@@ -19,9 +19,9 @@ namespace Logging
 				.WriteTo.Console() //outputTemplate: template
 				.WriteTo.Debug()
 				.WriteTo.File(path: @"Logs/log.txt", rollingInterval: RollingInterval.Day)
-				.WriteTo.Elasticsearch(new[] { new Uri("http://localhost:9200") }, opts =>
+				.WriteTo.Elasticsearch(new[] { new Uri(context.Configuration.GetValue("ElasticsearchURL", defaultValue: "http://elasticsearch:9200")!) }, opts =>
 				{
-					opts.DataStream = new DataStreamName("logs", context.Configuration.GetValue("ServiceName", defaultValue:"unknown")!, "shelfshare");
+					opts.DataStream = new DataStreamName("logs", context.Configuration.GetValue("ServiceName", defaultValue:"unknown")!, "default");
 					opts.BootstrapMethod = BootstrapMethod.Failure;
 				})
 				.Enrich.WithProperty("Application", context.HostingEnvironment.ApplicationName)

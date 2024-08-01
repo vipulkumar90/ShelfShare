@@ -6,7 +6,7 @@ namespace BookCatalog.API.Repositories
 	{
 		Task<IEnumerable<Book>> ReadAsync();
 		Task<Book?> ReadAsync(Guid id);
-		Task CreateAsync(BookDto bookDto);
+		Task<Guid> CreateAsync(BookDto bookDto);
 		Task<Book?> UpdateAsync(Guid id, BookDto bookDto);
 		Task<bool> DeleteAsync(Guid id);
 	}
