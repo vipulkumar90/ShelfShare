@@ -18,7 +18,7 @@ namespace Logging
 			loggerConfiguration
 				.WriteTo.Console() //outputTemplate: template
 				.WriteTo.Debug()
-				.WriteTo.File(path: @"Logs/log.txt", rollingInterval: RollingInterval.Day)
+				.WriteTo.File(path: context.Configuration.GetValue<string>("SerilogFilePath")!, rollingInterval: RollingInterval.Day)
 				.WriteTo.Elasticsearch(new[] { new Uri(context.Configuration.GetValue("ElasticsearchURL", defaultValue: "http://elasticsearch:9200")!) }, opts =>
 				{
 					opts.DataStream = new DataStreamName("logs", context.Configuration.GetValue("ServiceName", defaultValue:"unknown")!, "default");
