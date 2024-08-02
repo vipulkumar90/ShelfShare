@@ -6,7 +6,7 @@ namespace BookLoanManagement.API.Repositories
 	{
 		Task<IEnumerable<Loan>> ReadAsync();
 		Task<Loan?> ReadAsync(Guid id);
-		Task CreateAsync(LoanDto loanDto);
+		Task<Guid> CreateAsync(LoanDto loanDto);
 		Task<Loan?> UpdateAsync(Guid id, LoanDto loanDto);
 		Task<bool> DeleteAsync(Guid id);
 	}

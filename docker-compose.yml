@@ -1,0 +1,69 @@
+version: '3.4'
+
+services:
+  bookcatalog.api:
+    image: ${DOCKER_REGISTRY-}bookcatalogapi
+    build:
+      context: .
+      dockerfile: src/Services/BookCatalog.API/Dockerfile
+    networks: 
+      - shelfshare
+    ports:
+      - 5101:5101
+    depends_on:
+      elasticsearch:
+          condition: service_healthy
+    volumes:
+      - type: bind
+        source: ./src/Services/BookCatalog.API/Logs
+        target: /app/Logs/
+
+  bookloanmanagement.api:
+    image: ${DOCKER_REGISTRY-}bookloanmanagementapi
+    build:
+      context: .
+      dockerfile: src/Services/BookLoanManagement.API/Dockerfile
+    networks: 
+      - shelfshare
+    ports:
+      - 5102:5102
+    depends_on:
+      elasticsearch:
+          condition: service_healthy
+    volumes:
+      - type: bind
+        source: ./src/Services/BookLoanManagement.API/Logs
+        target: /app/Logs
+      
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+    networks:
+      - shelfshare
+    ports:
+      - "9200:9200"
+    deploy:
+      resources:
+        limits:
+          memory: 1GB
+    environment:
+      - "discovery.type=single-node"
+      - "xpack.security.enabled=false"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.14.3
+    networks:
+      - shelfshare
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+networks:
+  shelfshare:
+    driver: bridge
+

@@ -11,15 +11,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{FE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{67AF2D91-00EB-4EC7-866A-C8EC6FCE8E2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logging", "src\Infrastructure\Logging\Logging.csproj", "{E761D3CD-51B3-4914-A0C9-E40621A443B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logging", "src\Infrastructure\Logging\Logging.csproj", "{E761D3CD-51B3-4914-A0C9-E40621A443B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookCatalog.API", "src\Services\BookCatalog.API\BookCatalog.API.csproj", "{D34B3465-559B-4450-90CA-64CA1B7FAD7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookCatalog.API", "src\Services\BookCatalog.API\BookCatalog.API.csproj", "{D34B3465-559B-4450-90CA-64CA1B7FAD7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookLoanManagement.API", "src\Services\BookLoanManagement.API\BookLoanManagement.API.csproj", "{E39D4682-B6DD-448C-9467-622D0C50F34B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookLoanManagement.API", "src\Services\BookLoanManagement.API\BookLoanManagement.API.csproj", "{E39D4682-B6DD-448C-9467-622D0C50F34B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookLoanManagement.UnitTests", "tests\BookLoanManagement.UnitTests\BookLoanManagement.UnitTests.csproj", "{45CF0099-1896-451B-9465-BEBE4175D4F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookLoanManagement.UnitTests", "tests\BookLoanManagement.UnitTests\BookLoanManagement.UnitTests.csproj", "{45CF0099-1896-451B-9465-BEBE4175D4F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookCatalog.UnitTests", "tests\BookCatalog.UnitTests\BookCatalog.UnitTests.csproj", "{F4FD8EC0-B6CC-4462-95AB-392BF27C3E95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookCatalog.UnitTests", "tests\BookCatalog.UnitTests\BookCatalog.UnitTests.csproj", "{F4FD8EC0-B6CC-4462-95AB-392BF27C3E95}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{187CA1C6-9F6D-4A3E-8B21-116B48FAE896}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{F4FD8EC0-B6CC-4462-95AB-392BF27C3E95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4FD8EC0-B6CC-4462-95AB-392BF27C3E95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4FD8EC0-B6CC-4462-95AB-392BF27C3E95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{187CA1C6-9F6D-4A3E-8B21-116B48FAE896}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{187CA1C6-9F6D-4A3E-8B21-116B48FAE896}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{187CA1C6-9F6D-4A3E-8B21-116B48FAE896}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{187CA1C6-9F6D-4A3E-8B21-116B48FAE896}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
